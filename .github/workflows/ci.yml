@@ -25,16 +25,16 @@ jobs:
           - os: macos-14
             python-version: "3.12"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
       - name: Setup uv
         uses: yezz123/setup-uv@v4
         if: matrix.python-version != '3.7'
       - name: Set up Miniconda
-        uses: conda-incubator/setup-miniconda@v3
+        uses: conda-incubator/setup-miniconda@v4
         with:
           auto-update-conda: true
           python-version: ${{ matrix.python-version }}
@@ -52,7 +52,7 @@ jobs:
         run: nox --non-interactive --error-on-missing-interpreter --session "tests(python='${{ matrix.python-version }}', tox_version='latest')" -- tests/test_tox_to_nox.py --full-trace
         if: matrix.python-version != '3.7'
       - name: Save coverage report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-${{ github.job }}-${{ strategy.job-index }}
           path: .coverage.*
@@ -61,9 +61,9 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Set up Python 3.11
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: "3.11"
       - name: Setup uv
@@ -71,7 +71,7 @@ jobs:
       - name: Install Nox-under-test
         run:  uv pip install --system .
       - name: Download individual coverage reports
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: coverage-*
           merge-multiple: true
@@ -83,9 +83,9 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Set up Python 3.9
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: 3.9
       - name: Install Nox-under-test
@@ -95,9 +95,9 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Set up Python 3.9
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v6
         with:
           python-version: 3.9
       - name: Setup uv
@@ -111,7 +111,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push' && contains(github.ref, 'refs/tags/')
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Build sdist and wheel
         run: pipx run build
       - name: Publish distribution PyPI
